@@ -1,0 +1,104 @@
+buildscript {
+    ext {
+        dirs = [build    : file("$rootDir/build/modules/${project.name}"),
+                artifacts: file("$rootDir/build/artifacts")]
+
+        versions = [app        : "1.0.0",
+                    kotlin     : "1.2.61",
+                    spring_boot: "2.0.4.RELEASE"]
+    }
+
+    repositories {
+        mavenCentral()
+    }
+
+    dependencies {
+        classpath("org.springframework.boot:spring-boot-gradle-plugin:${versions.spring_boot}")
+        classpath("org.jetbrains.kotlin:kotlin-gradle-plugin:${versions.kotlin}")
+        classpath("org.jetbrains.kotlin:kotlin-allopen:${versions.kotlin}")
+    }
+}
+
+allprojects {
+    apply plugin: "java"
+    apply plugin: "kotlin"
+    apply plugin: "kotlin-spring"
+    apply plugin: "org.springframework.boot"
+    apply plugin: "io.spring.dependency-management"
+    apply plugin: "war"
+
+    group = "com.domain"
+    version = "${versions.app}"
+
+    sourceCompatibility = 1.8
+    targetCompatibility = 1.8
+
+    repositories {
+        mavenCentral()
+    }
+
+    dependencyManagement {
+        imports { mavenBom("org.springframework.boot:spring-boot-dependencies:${versions.spring_boot}") }
+    }
+
+    compileKotlin {
+        kotlinOptions {
+            freeCompilerArgs = ["-Xjsr305=strict"]
+            jvmTarget = "1.8"
+        }
+    }
+
+    compileTestKotlin {
+        kotlinOptions {
+            freeCompilerArgs = ["-Xjsr305=strict"]
+            jvmTarget = "1.8"
+        }
+    }
+
+    configurations {
+        providedRuntime
+    }
+
+    tasks.withType(Jar) {
+        buildDir = dirs.build
+    }
+}
+
+project(":core") {
+    bootJar {
+        enabled = false
+    }
+
+    bootWar {
+        enabled = false
+    }
+
+    jar {
+        enabled = true
+    }
+}
+
+project(":api") {
+    apply plugin: "application"
+
+    dependencies {
+        compile project(":core")
+    }
+
+    bootJar {
+        destinationDir = dirs.artifacts
+        archiveName = "app.jar"
+    }
+
+    bootWar {
+        destinationDir = dirs.artifacts
+        archiveName = "app.war"
+    }
+}
+
+apply plugin: "idea"
+apply plugin: "eclipse"
+
+task wrapper(type: Wrapper) {
+    gradleVersion = "4.9"
+}

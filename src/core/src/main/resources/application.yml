@@ -1,0 +1,28 @@
+server.port: ${APP_PORT}
+
+app.secret: ${APP_SECRET}
+
+spring:
+  mvc:
+    throw-exception-if-no-handler-found: true
+  jpa:
+    show-sql: true
+    hibernate.ddl-auto: none
+    properties.hibernate.jdbc.lob.non_contextual_creation: true
+  datasource:
+    driver-class-name: org.postgresql.Driver
+    url: jdbc:postgresql://db:${DB_PORT}/${DB_NAME}
+    username: ${DB_USER}
+    password: ${DB_PASS}
+  social:
+    facebook:
+      app-id: ${FACEBOOK_ID}
+      app-secret: ${FACEBOOK_SECRET}
+    google:
+      app-id: ${GOOGLE_ID}
+      app-secret: ${GOOGLE_SECRET}
+
+slack:
+  token: ${SLACK_TOKEN}
+  user: ${SLACK_USER}
+  channel: ${SLACK_CHANNEL}

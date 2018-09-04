@@ -1,0 +1,7 @@
+dependencies {
+    // tomcat
+    providedRuntime("org.springframework.boot:spring-boot-starter-tomcat")
+
+    // test
+    testCompile("org.springframework.boot:spring-boot-starter-test")
+}

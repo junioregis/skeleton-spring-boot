@@ -1,0 +1,21 @@
+server.port: 8080
+
+app.secret: secret
+
+spring:
+  datasource:
+    url: jdbc:postgresql://localhost:5432/db
+    username: postgres
+    password: postgres
+  social:
+    facebook:
+      app-id: app-id
+      app-secret: app-secret
+    google:
+      app-id: app-id
+      app-secret: app-secret
+
+slack:
+  token: token
+  user: user
+  channel: channel

@@ -1,0 +1,20 @@
+version: '3.7'
+
+services:
+  server:
+    env_file:
+      - ./env/production.env
+    environment:
+      VIRTUAL_HOST: api.domain.com
+      VIRTUAL_PORT: 8080
+
+  db:
+    env_file:
+      - ./env/production.env
+
+  db_admin:
+    env_file:
+      - ./env/production.env
+    environment:
+      VIRTUAL_HOST: db.domain.com
+      VIRTUAL_PORT: 80

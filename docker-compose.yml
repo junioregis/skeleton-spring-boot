@@ -1,0 +1,64 @@
+version: '3.7'
+
+volumes:
+  db:
+  db_admin:
+  gradle:
+
+networks:
+  backend:
+  frontend:
+
+services:
+  proxy:
+    image: jwilder/nginx-proxy:alpine
+    networks:
+      - frontend
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - /var/run/docker.sock:/tmp/docker.sock:ro
+
+  builder:
+    build:
+      context: .
+      dockerfile: ./builder/Dockerfile
+    volumes:
+      - gradle:/src/.gradle
+      - ./artifacts:/src/build/artifacts
+
+  server:
+    build:
+      context: .
+      dockerfile: ./server/Dockerfile
+    networks:
+      - backend
+      - frontend
+    expose:
+      - 8080
+    depends_on:
+      - db
+
+  db:
+    build:
+      context: .
+      dockerfile: ./db/Dockerfile
+    volumes:
+      - db:/var/lib/postgresql/data
+    networks:
+      - backend
+    expose:
+      - 5432
+
+  db_admin:
+    image: dpage/pgadmin4:latest
+    volumes:
+      - db_admin:/var/lib/pgadmin
+    networks:
+      - backend
+      - frontend
+    expose:
+      - 80
+    depends_on:
+      - db
